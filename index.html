@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sababa Abu Islam | Data science and software projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2F4; --panel:#FFFFFF; --ink:#0F1F2E; --muted:#4F5E6C; --rule:#CBD5DC;
+  --accent:#2B3FD6; --accent-ink:#FFFFFF; --msft:#0E8C8C; --tsla:#C8402F; --aapl:#5B6573;
+  --code-bg:#E3E9ED; --focus:#2B3FD6;
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1620; --panel:#16222F; --ink:#E8EEF3; --muted:#9AA9B7; --rule:#2A3947;
+    --accent:#93A2FF; --accent-ink:#0E1620; --msft:#3FC0C0; --tsla:#F0705E; --aapl:#9CA7B5;
+    --code-bg:#1C2A38; --focus:#93A2FF;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1620; --panel:#16222F; --ink:#E8EEF3; --muted:#9AA9B7; --rule:#2A3947;
+  --accent:#93A2FF; --accent-ink:#0E1620; --msft:#3FC0C0; --tsla:#F0705E; --aapl:#9CA7B5;
+  --code-bg:#1C2A38; --focus:#93A2FF;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px);-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.65}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:4px}
+a{color:var(--accent);text-underline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+h1,h2,h3{font-family:var(--display);line-height:1.08;margin:0;letter-spacing:-0.02em}
+h1{font-size:clamp(2.5rem,6.4vw,4.6rem);font-weight:800;max-width:14ch}
+h2{font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800;max-width:22ch}
+h3{font-size:1.3rem;font-weight:700;letter-spacing:-0.01em}
+p{margin:0 0 1em;max-width:66ch}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* top bar */
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;font-family:var(--display);font-weight:700}
+.top nav{display:flex;gap:clamp(12px,2.5vw,28px);flex-wrap:wrap}
+.top a{color:var(--ink);text-decoration:none;font-weight:500}
+.top a:hover{color:var(--accent)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,5vw,64px);align-items:center;padding:clamp(28px,6vw,72px) 0 clamp(48px,8vw,96px)}
+.hero p.lede{font-size:1.2rem;margin-top:22px;color:var(--muted)}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin:26px 0 0;padding:0;list-style:none;font-family:var(--display);font-weight:500;font-size:.98rem}
+.facts li{padding-left:14px;border-left:3px solid var(--accent)}
+
+/* chat window, the one memorable object */
+.chat{background:var(--panel);border:2px solid var(--ink);border-radius:14px;box-shadow:8px 8px 0 var(--accent);overflow:hidden;display:flex;flex-direction:column}
+.chat-head{padding:12px 16px;border-bottom:2px solid var(--ink);font-family:var(--display);font-weight:700;display:flex;justify-content:space-between;gap:12px;font-size:.95rem}
+.chat-head span:last-child{font-weight:500;color:var(--muted)}
+.log{height:300px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;font-size:.98rem;line-height:1.5}
+.msg{max-width:88%;padding:9px 13px;border-radius:12px;white-space:pre-line}
+.msg.you{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:3px}
+.msg.bot{align-self:flex-start;background:var(--code-bg);border-bottom-left-radius:3px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 12px}
+.chip{font:500 .85rem/1.2 var(--display);padding:7px 11px;border:1.5px solid var(--rule);background:transparent;color:var(--ink);border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.ask{display:flex;border-top:2px solid var(--ink)}
+.ask input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);padding:14px 16px;font:1rem var(--body)}
+.ask input::placeholder{color:var(--muted)}
+.ask button{border:0;border-left:2px solid var(--ink);background:var(--ink);color:var(--bg);font:700 1rem var(--display);padding:0 22px;cursor:pointer}
+.ask button:hover{background:var(--accent);color:var(--accent-ink)}
+
+/* sections */
+section{padding:clamp(44px,7vw,88px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;gap:14px;margin-bottom:34px}
+.sec-head p{color:var(--muted);font-size:1.1rem;margin:0}
+.meta{font-family:var(--display);font-weight:500;color:var(--muted);font-size:.95rem}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.tools li{font:500 .85rem/1 var(--display);padding:6px 10px;border:1.5px solid var(--rule);border-radius:6px;color:var(--muted)}
+
+/* chart */
+.chart-box{background:var(--panel);border:1.5px solid var(--rule);border-radius:10px;padding:clamp(14px,3vw,26px)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font:700 .95rem/1 var(--display);padding:10px 14px;border-radius:8px;border:1.5px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chart-wrap{overflow-x:auto}
+svg.chart{width:100%;min-width:520px;height:auto;display:block}
+.chart text{font-family:var(--display);fill:var(--muted);font-size:12px}
+.chart .val{fill:var(--ink);font-weight:700;font-size:11.5px}
+.chart .co{fill:var(--ink);font-weight:700;font-size:14px}
+.chart .grid{stroke:var(--rule);stroke-width:1}
+.key{display:flex;gap:18px;flex-wrap:wrap;font:500 .9rem var(--display);color:var(--muted);margin-top:8px}
+.key i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--aapl)}
+.takeaway{margin:18px 0 0;font-size:1.1rem;max-width:70ch}
+.findings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:36px}
+.finding{border-top:4px solid var(--c);padding-top:12px}
+.finding h3{margin-bottom:6px}
+.finding p{font-size:1rem;color:var(--muted);margin:0}
+
+/* two-col text blocks */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,56px)}
+pre{margin:0;background:var(--code-bg);border-radius:8px;padding:16px 18px;overflow-x:auto;font:.85rem/1.55 var(--mono);color:var(--ink)}
+.tests{list-style:none;margin:0 0 1em;padding:0;font:.9rem/1.9 var(--mono)}
+.tests li::before{content:"pass  ";color:var(--msft);font-weight:700}
+.note{border-left:4px solid var(--accent);padding:2px 0 2px 16px;color:var(--muted)}
+
+/* project rows */
+.rows{display:grid;gap:0}
+.row{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);gap:clamp(18px,4vw,48px);padding:28px 0;border-top:1px solid var(--rule)}
+.row:first-child{border-top:0;padding-top:0}
+.row h3{margin-bottom:8px}
+.row p{margin:0 0 .7em;color:var(--muted)}
+.row p:last-child{margin-bottom:0}
+
+footer{border-top:1px solid var(--rule);padding:48px 0 64px}
+footer h2{margin-bottom:14px}
+.contact{display:flex;flex-wrap:wrap;gap:12px 28px;font:700 1.05rem var(--display);margin:20px 0 28px}
+.small{font-size:.92rem;color:var(--muted);max-width:75ch}
+
+/* one load moment: the chat's first exchange; nothing else animates */
+.msg.enter{animation:pop .25s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.msg.enter{animation:none}}
+
+@media (max-width:860px){
+  .hero,.split,.row{grid-template-columns:1fr}
+  .findings{grid-template-columns:1fr}
+  .chat{box-shadow:5px 5px 0 var(--accent)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span>Sababa Abu Islam</span>
+    <nav aria-label="Sections">
+      <a href="#analysis">Financial analysis</a>
+      <a href="#chatbot">Chatbot</a>
+      <a href="#r">R visuals</a>
+      <a href="#java">Java</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+  <div class="hero">
+    <div>
+      <h1>I turn SEC filings into answers you can check.</h1>
+      <p class="lede">Data analysis and software projects in Python, R and Java. The chatbot on this page is a working version of one of them. Ask it about Microsoft, Tesla or Apple.</p>
+      <ul class="facts">
+        <li>9 company-years of 10-K data, collected by hand</li>
+        <li>4 of 4 unit tests passing</li>
+        <li>Open to data science and software roles</li>
+      </ul>
+    </div>
+
+    <div class="chat" role="region" aria-label="Financial chatbot demo">
+      <div class="chat-head"><span>Financial chatbot</span><span>FY2023 to FY2025</span></div>
+      <div class="log" id="log" role="log" aria-live="polite"></div>
+      <div class="chips" id="chips"></div>
+      <form class="ask" id="ask" autocomplete="off">
+        <label class="sr-only" for="q">Ask a question about Microsoft, Tesla or Apple</label>
+        <input id="q" type="text" placeholder="Ask about revenue, net income, assets…" maxlength="200">
+        <button type="submit">Ask</button>
+      </form>
+    </div>
+  </div>
+
+  <section id="analysis">
+    <div class="sec-head">
+      <h2>Three companies, three different stories</h2>
+      <p>Revenue, profit and cash flow can tell different stories about the same company. I pulled five figures per company-year from their SEC 10-K filings and compared them.</p>
+      <ul class="tools"><li>Python</li><li>pandas</li><li>Jupyter</li><li>Excel</li></ul>
+    </div>
+
+    <div class="chart-box">
+      <div class="tabs" role="group" aria-label="Choose a metric">
+        <button class="tab" data-m="rev" aria-pressed="true">Revenue</button>
+        <button class="tab" data-m="ni" aria-pressed="false">Net income</button>
+        <button class="tab" data-m="ocf" aria-pressed="false">Operating cash flow</button>
+        <button class="tab" data-m="nm" aria-pressed="false">Net margin</button>
+      </div>
+      <div class="chart-wrap"><svg class="chart" id="chart" viewBox="0 0 640 330" role="img" aria-labelledby="chart-title"><title id="chart-title">Grouped bar chart</title></svg></div>
+      <div class="key" aria-hidden="true">
+        <span><i style="opacity:.4"></i>FY2023</span><span><i style="opacity:.7"></i>FY2024</span><span><i></i>FY2025</span>
+        <span>Fiscal years end on different dates for each company.</span>
+      </div>
+      <p class="takeaway" id="takeaway"></p>
+      <table class="sr-only" id="datatable"></table>
+    </div>
+
+    <div class="findings">
+      <div class="finding" style="--c:var(--msft)">
+        <h3>Microsoft</h3>
+        <p>Revenue rose from $211.9bn to $281.7bn, net income from $72.4bn to $101.8bn, and operating cash flow from $87.6bn to $136.2bn. Growth, profit and cash all moved together.</p>
+      </div>
+      <div class="finding" style="--c:var(--tsla)">
+        <h3>Tesla</h3>
+        <p>Revenue stayed near $95–98bn while net income fell from $15.0bn to $3.9bn. Operating cash flow held at $13–15bn, so profit and cash flow can diverge sharply.</p>
+      </div>
+      <div class="finding" style="--c:var(--aapl)">
+        <h3>Apple</h3>
+        <p>Net income dipped in FY2024 and recovered to $112.0bn in FY2025. Operating cash flow stayed above $110bn throughout, and liabilities fell to $285.5bn in FY2025.</p>
+      </div>
+    </div>
+
+    <div class="split" style="margin-top:44px">
+      <div>
+        <h3>How I built the dataset</h3>
+        <p style="margin-top:10px;color:var(--muted)">Each row is one company and fiscal year, with the SEC 10-K it came from recorded beside it so any number can be checked. In pandas I added year-over-year growth for all five metrics, net margin, operating cash flow margin and liabilities as a share of assets.</p>
+        <p style="color:var(--muted)">Fiscal years don't line up: Microsoft ends 30 June, Tesla 31 December and Apple in late September. The analysis labels each figure with its own period instead of treating them as the same calendar year.</p>
+      </div>
+      <pre aria-label="Code sample: growth calculation"><code>for metric, new in [
+    ('Total Revenue ($m)', 'Revenue Growth (%)'),
+    ('Net Income ($m)',    'Net Income Growth (%)'),
+    # ... assets, liabilities, cash flow
+]:
+    df[new] = df.groupby('Company')[metric].pct_change() * 100
+
+df['Net Margin (%)'] = df['Net Income ($m)'] / df['Total Revenue ($m)'] * 100</code></pre>
+    </div>
+  </section>
+
+  <section id="chatbot">
+    <div class="sec-head">
+      <h2>A chatbot that says what it can't do</h2>
+      <p>The demo at the top of this page is a JavaScript port of my Python command-line chatbot. Both use the same filing data and the same rules.</p>
+      <ul class="tools"><li>Python</li><li>pandas</li><li>unittest</li></ul>
+    </div>
+    <div class="split">
+      <div>
+        <h3>What it does</h3>
+        <p style="margin-top:10px;color:var(--muted)">It finds the company, year and metric in a question, looks the figure up, and answers in USD billions with the fiscal year-end date. For net income and revenue "change" questions it compares the latest two fiscal years and reports both the dollar and percentage difference. It can also rank all three companies by 2025 revenue.</p>
+        <p style="color:var(--muted)">Anything it can't match gets a plain fallback pointing to <em>help</em>, rather than a guess.</p>
+        <p class="note">It is a rule-based prototype, not a generative model. It matches keywords, covers three companies and three years, doesn't fetch live filings, and isn't investment advice. I documented these limits in the README.</p>
+      </div>
+      <div>
+        <h3>Tests</h3>
+        <ul class="tests" style="margin-top:10px">
+          <li>test_help</li>
+          <li>test_microsoft_revenue</li>
+          <li>test_tesla_net_income</li>
+          <li>test_unknown_question</li>
+        </ul>
+        <p style="color:var(--muted)">The tests check exact figures against the filing data ($281.724 billion for Microsoft's FY2025 revenue, $3.855 billion for Tesla's net income) and that unsupported questions get the fallback.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="r">
+    <div class="sec-head">
+      <h2>Data wrangling and charts in R</h2>
+      <p>Three scripts that go from raw data to a result: one chart from a public dataset, one player-stats summary, and one generative graphic.</p>
+      <ul class="tools"><li>R</li><li>dplyr</li><li>ggplot2</li><li>readr</li><li>ggstream</li></ul>
+    </div>
+    <div class="rows">
+      <div class="row">
+        <div><h3>Great Britain Olympic middle-distance medals</h3></div>
+        <div>
+          <p>Loads the TidyTuesday Olympics dataset straight from GitHub, filters to Great Britain in the men's and women's 800m and 1,500m, and recodes missing medals as "no medal". It counts results per event and medal, then draws one panel per event with gold, silver and bronze in their own colours.</p>
+          <pre><code>olympics %&gt;%
+  filter(team == "Great Britain", event %in% c(...)) %&gt;%
+  mutate(medal = ifelse(is.na(medal), "no medal", tolower(medal))) %&gt;%
+  group_by(event, medal) %&gt;%
+  summarise(individual_medal_count = n(), .groups = "drop")</code></pre>
+        </div>
+      </div>
+      <div class="row">
+        <div><h3>Harry Kane season summary</h3></div>
+        <div>
+          <p>Reads a season-by-season CSV and builds new columns: goals plus assists, goals without penalties, and goals minus expected goals to show over- and under-performance. It then summarises seasons played, appearances, total goals and average expected goals, and filters to seasons with more than 30 goal contributions.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div><h3>Stream graph with a custom palette</h3></div>
+        <div>
+          <p>Generates seeded normal-distribution data across four layers, maps a hand-picked colour palette onto them, and draws a flowing stream graph with ggstream on a clean white background.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="java">
+    <div class="sec-head">
+      <h2>Java: structure, persistence and error handling</h2>
+      <p>University coursework where I focused on clean methods, data structures and handling failures properly.</p>
+      <ul class="tools"><li>Java</li><li>Git and GitHub</li></ul>
+    </div>
+    <div class="rows">
+      <div class="row">
+        <div><h3>Film chatbot with saved conversations</h3></div>
+        <div>
+          <p>An interactive console chatbot built from small single-purpose methods. It uses a record-style class with accessor and mutator methods for each question, picks questions at random without repeating one, and saves and loads each user's conversation from a text file named after them.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div><h3>Graph reachability</h3></div>
+        <div>
+          <p>A <code>Node</code> class with directed links and an <code>isReachable</code> method, tested on a six-node graph that contains a cycle. The tests cover reachable, unreachable and same-node cases.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div><h3>Specific exception handling</h3></div>
+        <div>
+          <p>Methods that catch the exact exception that can occur (index out of bounds, divide by zero, bad number format) and return a safe value with a clear message, instead of catching a generic <code>Exception</code>.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div><h3>Git workflow</h3></div>
+        <div>
+          <p>Hands-on practice with the command line, branching, pushing, merging, and resolving merge conflicts through GitHub pull requests.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <footer id="contact">
+    <h2>Get in touch</h2>
+    <div class="contact">
+      <a href="mailto:sababa.abu31@gmail.com">sababa.abu31@gmail.com</a>
+      <a href="https://github.com/idklol313">GitHub</a>
+      <a href="https://www.linkedin.com/in/sababa-abu-islam/">LinkedIn</a>
+    </div>
+    <p class="small">Figures come from SEC Form 10-K filings for Microsoft, Tesla and Apple. This page is for demonstration and isn't investment advice. The chatbot demo runs entirely in your browser.</p>
+  </footer>
+</div>
+
+<script>
+/* ---------- data (from financial_data_2023_2025.csv, USD millions) ---------- */
+const ROWS = [
+  ["Microsoft",2023,"2023-06-30",211915,72361,411976,205753,87582],
+  ["Microsoft",2024,"2024-06-30",245122,88136,512163,243686,118548],
+  ["Microsoft",2025,"2025-06-30",281724,101832,619003,275524,136162],
+  ["Tesla",2023,"2023-12-31",96773,14974,106618,43009,13256],
+  ["Tesla",2024,"2024-12-31",97690,7153,122070,48390,14923],
+  ["Tesla",2025,"2025-12-31",94827,3855,137806,54941,14747],
+  ["Apple",2023,"2023-09-30",383285,96995,352583,290437,110543],
+  ["Apple",2024,"2024-09-28",391035,93736,364980,308030,118254],
+  ["Apple",2025,"2025-09-27",416161,112010,359241,285508,111482]
+].map(r => ({company:r[0],year:r[1],end:r[2],rev:r[3],ni:r[4],assets:r[5],liab:r[6],ocf:r[7]}));
+
+/* ---------- chatbot: port of chatbot.py ---------- */
+const COMPANIES = ["Microsoft","Tesla","Apple"];
+const YEARS = [2023,2024,2025];
+const METRIC_LABEL = {rev:"total revenue", ni:"net income", assets:"total assets", liab:"total liabilities", ocf:"operating cash flow"};
+const billions = v => "$" + (v/1000).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3}) + " billion";
+const signed = n => (n >= 0 ? "+" : "") + n.toFixed(2) + "%";
+
+function byCompany(name){ return ROWS.filter(r => r.company === name).sort((a,b) => a.year - b.year); }
+
+function answer(text){
+  const q = text.trim().toLowerCase();
+  if (["help","what can you do","what can you do?"].includes(q))
+    return "Ask for revenue, net income, assets, liabilities, or operating cash flow for Microsoft, Tesla, or Apple in 2023–2025. You can also ask about net income changes, revenue growth, or a 2025 revenue comparison.";
+  if (q.includes("what data") || q.includes("available data") || q.includes("which companies"))
+    return "Data covers Microsoft, Tesla, and Apple for fiscal years 2023–2025 and five financial metrics.";
+
+  const company = COMPANIES.find(n => q.includes(n.toLowerCase()));
+  const year = YEARS.find(y => q.includes(String(y)));
+  const change = w => ["changed","change","growth","increased","decreased"].some(x => w.includes(x));
+
+  if (company && (q.includes("net income") || q.includes("profit")) && change(q)){
+    const p = byCompany(company), o = p[p.length-2], n = p[p.length-1];
+    const diff = n.ni - o.ni, pct = diff / o.ni * 100;
+    const dir = diff > 0 ? "increased" : diff < 0 ? "decreased" : "did not change";
+    return `${company}'s net income ${dir} from ${billions(o.ni)} in FY${o.year} to ${billions(n.ni)} in FY${n.year}. Change: ${billions(Math.abs(diff))} (${signed(pct)}).`;
+  }
+  if (company && q.includes("revenue") && ["growth","changed","change"].some(x => q.includes(x))){
+    const p = byCompany(company), o = p[p.length-2], n = p[p.length-1];
+    const diff = n.rev - o.rev, pct = diff / o.rev * 100;
+    const dir = diff > 0 ? "increased" : diff < 0 ? "decreased" : "did not change";
+    return `${company}'s revenue ${dir} from ${billions(o.rev)} in FY${o.year} to ${billions(n.rev)} in FY${n.year}, a change of ${signed(pct)}.`;
+  }
+  if ((q.includes("compare") || q.includes("comparison")) && q.includes("2025")){
+    const latest = ROWS.filter(r => r.year === 2025).sort((a,b) => b.rev - a.rev);
+    return "2025 revenue comparison (largest to smallest):\n" + latest.map(r => `- ${r.company}: ${billions(r.rev)}`).join("\n");
+  }
+
+  let metric = null;
+  if (q.includes("revenue")) metric = "rev";
+  else if (q.includes("net income") || q.includes("profit")) metric = "ni";
+  else if (q.includes("asset")) metric = "assets";
+  else if (q.includes("liabilit")) metric = "liab";
+  else if (q.includes("operating cash flow") || q.includes("cash flow")) metric = "ocf";
+
+  if (company && year && metric){
+    const row = ROWS.find(r => r.company === company && r.year === year);
+    if (!row) return `No data found for ${company} in FY${year}.`;
+    return `${company}'s ${METRIC_LABEL[metric]} in fiscal year ${year} (year ended ${row.end}) was ${billions(row[metric])}.`;
+  }
+  return "Sorry, I can only answer predefined questions. Type 'help' for examples.";
+}
+
+const log = document.getElementById("log");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function addMsg(text, who, animate){
+  const d = document.createElement("div");
+  d.className = "msg " + who + (animate && !reduceMotion ? " enter" : "");
+  d.textContent = text;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+function ask(text){
+  const t = text.trim();
+  if (!t) return;
+  addMsg(t, "you", true);
+  const reply = answer(t);
+  setTimeout(() => addMsg(reply, "bot", true), reduceMotion ? 0 : 280);
+}
+document.getElementById("ask").addEventListener("submit", e => {
+  e.preventDefault();
+  const input = document.getElementById("q");
+  ask(input.value);
+  input.value = "";
+});
+const SAMPLES = [
+  "What was Tesla's net income in 2025?",
+  "How has Tesla's net income changed over the last year?",
+  "What was Microsoft's operating cash flow in 2025?",
+  "Compare companies in 2025.",
+  "What were Apple's total assets in 2023?"
+];
+const chips = document.getElementById("chips");
+SAMPLES.forEach(s => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "chip"; b.textContent = s;
+  b.addEventListener("click", () => ask(s));
+  chips.appendChild(b);
+});
+// opening exchange: the page's single entrance moment
+addMsg("Hi. I answer questions about Microsoft, Tesla and Apple, using figures from their 10-K filings. Try one of the questions below, or type 'help'.", "bot", false);
+setTimeout(() => ask(SAMPLES[0]), reduceMotion ? 0 : 700);
+
+/* ---------- chart ---------- */
+const COLORS = {Microsoft:"var(--msft)", Tesla:"var(--tsla)", Apple:"var(--aapl)"};
+const METRICS = {
+  rev:{label:"Total revenue ($bn)", get:r => r.rev/1000, fmt:v => v.toFixed(1),
+       note:"Microsoft grew revenue 33% in two years and Apple added about $33bn. Tesla's revenue slipped about 2%."},
+  ni:{label:"Net income ($bn)", get:r => r.ni/1000, fmt:v => v.toFixed(1),
+      note:"Tesla's net income fell 74%, from $15.0bn to $3.9bn, while its revenue barely moved. Apple dipped in FY2024 and recovered to $112.0bn."},
+  ocf:{label:"Operating cash flow ($bn)", get:r => r.ocf/1000, fmt:v => v.toFixed(1),
+       note:"Tesla's operating cash flow held at $13–15bn even as profit shrank. Microsoft's rose 55%, from $87.6bn to $136.2bn."},
+  nm:{label:"Net margin (%)", get:r => r.ni/r.rev*100, fmt:v => v.toFixed(1) + "%",
+      note:"Tesla's net margin dropped from 15.5% to 4.1%. Microsoft's rose to 36.1% and Apple's ended at 26.9%."}
+};
+const NS = "http://www.w3.org/2000/svg";
+function el(name, attrs, text){
+  const e = document.createElementNS(NS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function niceMax(v){
+  const p = Math.pow(10, Math.floor(Math.log10(v)));
+  const f = v / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
+}
+function drawChart(key){
+  const m = METRICS[key];
+  const svg = document.getElementById("chart");
+  svg.querySelectorAll(":scope > :not(title)").forEach(n => n.remove());
+  const W = 640, H = 330, L = 44, R = 10, T = 24, B = 40;
+  const plotW = W - L - R, plotH = H - T - B;
+  const all = ROWS.map(m.get);
+  const top = niceMax(Math.max(...all) * 1.08);
+  const y = v => T + plotH - (v / top) * plotH;
+
+  for (let i = 0; i <= 4; i++){
+    const v = top * i / 4;
+    svg.appendChild(el("line", {class:"grid", x1:L, x2:W-R, y1:y(v), y2:y(v)}));
+    svg.appendChild(el("text", {x:L-8, y:y(v)+4, "text-anchor":"end"}, key === "nm" ? Math.round(v) + "%" : Math.round(v)));
+  }
+  const groupW = plotW / COMPANIES.length, barW = Math.min(44, groupW / 4);
+  COMPANIES.forEach((c, gi) => {
+    const rows = byCompany(c);
+    const gx = L + gi * groupW + groupW / 2;
+    rows.forEach((r, i) => {
+      const v = m.get(r), x = gx + (i - 1) * (barW + 6) - barW / 2;
+      const rect = el("rect", {x, y:y(v), width:barW, height:Math.max(0, plotH + T - y(v)), fill:COLORS[c], opacity:[.4,.7,1][i], rx:2});
+      rect.appendChild(el("title", {}, `${c} FY${r.year}: ${m.fmt(v)}`));
+      svg.appendChild(rect);
+      svg.appendChild(el("text", {class:"val", x:x + barW/2, y:y(v) - 5, "text-anchor":"middle"}, m.fmt(v)));
+    });
+    svg.appendChild(el("text", {class:"co", x:gx, y:H - 12, "text-anchor":"middle"}, c));
+  });
+  svg.querySelector("title").textContent = `${m.label} by company, FY2023 to FY2025`;
+  document.getElementById("takeaway").textContent = m.note;
+
+  const t = document.getElementById("datatable");
+  t.innerHTML = "";
+  const cap = document.createElement("caption"); cap.textContent = m.label + " by company and fiscal year"; t.appendChild(cap);
+  const hr = t.insertRow();
+  ["Company","FY2023","FY2024","FY2025"].forEach(h => { const th = document.createElement("th"); th.textContent = h; hr.appendChild(th); });
+  COMPANIES.forEach(c => {
+    const tr = t.insertRow();
+    tr.insertCell().textContent = c;
+    byCompany(c).forEach(r => { tr.insertCell().textContent = m.fmt(m.get(r)); });
+  });
+}
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  drawChart(b.dataset.m);
+}));
+drawChart("rev");
+</script>
+</body>
+</html>
